@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#000000" />
+<title>Product Security · GIGA-TMS</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.css" />
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  :root{
+    --bg:#fff;
+    --bg-2:#fbfbfd;
+    --bg-3:#f5f5f7;
+    --ink:#1d1d1f;
+    --ink-2:#424245;
+    --ink-3:#6e6e73;
+    --ink-4:#86868b;
+    --line:#d2d2d7;
+    --line-2:#e8e8ed;
+    --blue:#0071e3;
+    --blue-2:#2997ff;
+    --green:#30d158;
+    --red:#ff3b30;
+    --radius:22px;
+    --radius-sm:14px;
+    --safe-top:env(safe-area-inset-top,0);
+    --safe-bottom:env(safe-area-inset-bottom,0);
+    --safe-left:env(safe-area-inset-left,0);
+    --safe-right:env(safe-area-inset-right,0);
+  }
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang TC","Microsoft JHHei",sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:-0.01em;
+    overflow-x:hidden;
+    padding-top:calc(52px + var(--safe-top));
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+  /* ===== NAV ===== */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:saturate(180%) blur(20px);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);
+    border-bottom:1px solid rgba(0,0,0,0.06);
+    transition:background .3s,border-color .3s;
+    padding-top:var(--safe-top);
+  }
+  .nav.dark{background:rgba(0,0,0,0.72);border-bottom-color:rgba(255,255,255,0.08)}
+  .nav.dark .nav-brand,.nav.dark .nav-link{color:#f5f5f7}
+  .nav-inner{
+    max-width:1200px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 28px;height:52px;
+  }
+  .nav-brand{font-weight:600;font-size:15px;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
+  .nav-brand svg{width:18px;height:18px}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-link{font-size:13px;color:var(--ink-2);transition:color .2s}
+  .nav-link:hover{color:var(--blue)}
+  .nav-cta{
+    font-size:13px;padding:7px 16px;
+    background:var(--ink);color:#fff;border-radius:100px;
+    transition:background .2s;
+  }
+  .nav-cta:hover{background:#000}
+  .nav.dark .nav-cta{background:#f5f5f7;color:#1d1d1f}
+
+  /* Hamburger */
+  .burger{
+    display:none;
+    width:44px;height:44px;
+    align-items:center;justify-content:center;
+    border-radius:10px;
+    margin-right:-10px;
+  }
+  .burger span{
+    position:relative;width:18px;height:2px;background:currentColor;
+    transition:transform .3s,opacity .3s;
+  }
+  .burger span::before,.burger span::after{
+    content:"";position:absolute;left:0;width:18px;height:2px;background:currentColor;
+    transition:transform .3s;
+  }
+  .burger span::before{top:-6px}
+  .burger span::after{top:6px}
+  .burger.open span{background:transparent}
+  .burger.open span::before{transform:translateY(6px) rotate(45deg)}
+  .burger.open span::after{transform:translateY(-6px) rotate(-45deg)}
+
+  /* Mobile menu */
+  .mobile-menu{
+    position:fixed;top:calc(52px + var(--safe-top));left:0;right:0;bottom:0;
+    background:rgba(255,255,255,0.98);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    z-index:99;
+    padding:20px 28px 40px;
+    transform:translateY(-20px);opacity:0;pointer-events:none;
+    transition:transform .3s,opacity .3s;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .mobile-menu.open{transform:translateY(0);opacity:1;pointer-events:auto}
+  .mobile-menu a{
+    display:block;
+    padding:16px 0;
+    font-size:17px;font-weight:500;
+    border-bottom:1px solid var(--line-2);
+    color:var(--ink);
+  }
+  .mobile-menu a:last-child{border-bottom:none}
+  .mobile-menu .m-cta{
+    display:block;text-align:center;
+    margin-top:24px;padding:14px;
+    background:var(--blue);color:#fff;border-radius:14px;
+    font-weight:500;border:none;
+  }
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    background:#000;
+    color:#f5f5f7;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+    padding:calc(80px + var(--safe-top)) 24px calc(60px + var(--safe-bottom));
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%,rgba(41,151,255,0.25),transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 80%,rgba(191,90,242,0.18),transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 90%,rgba(48,209,88,0.12),transparent 60%);
+    pointer-events:none;
+  }
+  .hero-grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);
+    background-size:60px 60px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 70%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,#000 30%,transparent 70%);
+  }
+  .hero-inner{
+    position:relative;z-index:2;
+    max-width:980px;text-align:center;
+    width:100%;
+  }
+  .hero-pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 14px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:100px;
+    font-size:12px;color:#f5f5f7;
+    margin-bottom:28px;
+    backdrop-filter:blur(10px);
+  }
+  .hero-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .hero h1{
+    font-size:clamp(40px,9vw,96px);
+    font-weight:700;letter-spacing:-0.04em;
+    line-height:1.02;
+    background:linear-gradient(180deg,#fff 0%,#a1a1a6 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:20px;
+  }
+  .hero-sub{
+    font-size:clamp(16px,2.4vw,24px);
+    color:#a1a1a6;font-weight:400;
+    max-width:680px;margin:0 auto 32px;
+    letter-spacing:-0.01em;
+    padding:0 8px;
+  }
+  .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn-primary{
+    padding:14px 26px;background:var(--blue);color:#fff;
+    border-radius:100px;font-size:15px;font-weight:500;
+    transition:background .2s,transform .1s;
+    display:inline-flex;align-items:center;gap:6px;
+    min-height:44px;
+  }
+  .btn-primary:hover{background:#0077ed}
+  .btn-primary:active{transform:scale(0.97)}
+  .btn-ghost{
+    padding:14px 26px;background:rgba(255,255,255,0.08);
+    color:#f5f5f7;border:1px solid rgba(255,255,255,0.15);
+    border-radius:100px;font-size:15px;font-weight:500;
+    transition:background .2s;min-height:44px;
+    display:inline-flex;align-items:center;
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,0.14)}
+  .hero-meta{
+    margin-top:48px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+    font-size:12px;color:#86868b;
+    letter-spacing:0.05em;text-transform:uppercase;
+    text-align:center;
+  }
+  .hero-meta strong{color:#f5f5f7;font-weight:500;display:block;font-size:14px;margin-bottom:2px;letter-spacing:0}
+
+  /* ===== SECTIONS ===== */
+  .section{padding:80px 24px;position:relative}
+  .section.alt{background:var(--bg-2)}
+  .section.dark{background:#1d1d1f;color:#f5f5f7}
+  .section.dark .section-eyebrow{color:var(--blue-2)}
+  .section.dark .section-lead{color:#a1a1a6}
+  .wrap{max-width:1200px;margin:0 auto}
+  .section-head{max-width:760px;margin-bottom:48px}
+  .section-eyebrow{
+    font-size:13px;color:var(--blue);
+    font-weight:600;letter-spacing:0.02em;
+    margin-bottom:14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .section-eyebrow::before{
+    content:"";width:24px;height:1px;background:currentColor;
+  }
+  .section-title{
+    font-size:clamp(32px,6vw,56px);
+    font-weight:700;letter-spacing:-0.03em;
+    line-height:1.05;margin-bottom:16px;
+  }
+  .section-lead{
+    font-size:clamp(16px,1.8vw,20px);
+    color:var(--ink-3);font-weight:400;
+    line-height:1.5;
+  }
+
+  /* ===== COMMITMENT (01) ===== */
+  .commit-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+  }
+  .commit-text p{font-size:16px;color:var(--ink-2);margin-bottom:16px;line-height:1.6}
+  .commit-text strong{color:var(--ink);font-weight:600}
+  .commit-visual{
+    aspect-ratio:1;
+    background:linear-gradient(135deg,#f5f5f7 0%,#e8e8ed 100%);
+    border-radius:var(--radius);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+    max-width:420px;margin:0 auto;
+  }
+  .commit-visual::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 30% 30%,rgba(0,113,227,0.15),transparent 50%);
+  }
+  .shield{
+    position:relative;z-index:2;
+    width:50%;aspect-ratio:1;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .shield svg{width:100%;height:100%;filter:drop-shadow(0 20px 40px rgba(0,0,0,0.15))}
+  .commit-stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px;
+  }
+  .stat{
+    padding:20px;background:#fff;border-radius:var(--radius-sm);
+    border:1px solid var(--line-2);
+  }
+  .stat-num{font-size:clamp(28px,5vw,36px);font-weight:700;letter-spacing:-0.03em;color:var(--ink);line-height:1}
+  .stat-label{font-size:13px;color:var(--ink-3);margin-top:8px}
+
+  /* ===== CHANNEL (02) ===== */
+  .channel-card{
+    background:linear-gradient(135deg,#fbfbfd 0%,#f0f0f3 100%);
+    border-radius:var(--radius);
+    padding:32px;
+    display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:center;
+    border:1px solid var(--line-2);
+  }
+  .channel-main .label{
+    font-size:12px;color:var(--ink-3);
+    text-transform:uppercase;letter-spacing:0.1em;
+    margin-bottom:12px;font-weight:500;
+  }
+  .channel-email{
+    font-size:clamp(18px,3.5vw,32px);font-weight:600;
+    color:var(--blue);letter-spacing:-0.02em;
+    display:inline-block;margin-bottom:12px;
+    word-break:break-all;
+    border-bottom:1px solid transparent;transition:border-color .2s;
+  }
+  .channel-email:hover{border-bottom-color:var(--blue)}
+  .channel-hint{font-size:14px;color:var(--ink-3);line-height:1.5}
+  .channel-hint code{background:var(--bg-3);padding:2px 8px;border-radius:6px;font-size:13px;word-break:break-all}
+  .channel-side{
+    background:#fff;border-radius:var(--radius-sm);
+    padding:20px;border:1px solid var(--line-2);
+  }
+  .channel-side h4{font-size:14px;font-weight:600;margin-bottom:10px}
+  .pgp-fp{
+    font-family:'SF Mono',ui-monospace,Menlo,monospace;
+    font-size:11px;color:var(--ink-3);
+    background:var(--bg-3);padding:10px 12px;
+    border-radius:8px;margin:12px 0;
+    word-break:break-all;line-height:1.5;
+  }
+  .channel-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .btn-sm{
+    padding:10px 16px;font-size:14px;font-weight:500;
+    border-radius:100px;transition:all .2s;
+    display:inline-flex;align-items:center;gap:6px;
+    min-height:44px;
+  }
+  .btn-sm.primary{background:var(--ink);color:#fff}
+  .btn-sm.primary:hover{background:#000}
+  .btn-sm.ghost{background:transparent;color:var(--blue);border:1px solid var(--line)}
+  .btn-sm.ghost:hover{background:var(--bg-3)}
+
+  /* ===== TEMPLATE / FORM (03) ===== */
+  .template-wrap{
+    display:grid;grid-template-columns:1fr 340px;gap:24px;
+  }
+  .form-card{
+    background:#fff;border:1px solid var(--line-2);
+    border-radius:var(--radius);
+    padding:28px;
+  }
+  .form-card h3{
+    font-size:18px;font-weight:600;margin-bottom:6px;letter-spacing:-0.01em;
+  }
+  .form-card .form-sub{font-size:14px;color:var(--ink-3);margin-bottom:20px}
+  .field{margin-bottom:16px}
+  .field label{
+    display:block;font-size:13px;font-weight:600;
+    color:var(--ink-2);margin-bottom:6px;
+  }
+  .field .field-en{font-weight:400;color:var(--ink-4);margin-left:4px}
+  .field input,.field select,.field textarea{
+    width:100%;
+    padding:12px 14px;
+    font-family:inherit;font-size:16px; /* 16px 防止 iOS zoom */
+    color:var(--ink);
+    background:var(--bg-2);
+    border:1px solid var(--line-2);
+    border-radius:12px;
+    transition:border-color .2s,background .2s;
+    -webkit-appearance:none;appearance:none;
+    min-height:44px;
+  }
+  .field textarea{min-height:100px;resize:vertical;line-height:1.5}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--blue);background:#fff;
+    box-shadow:0 0 0 4px rgba(0,113,227,0.12);
+  }
+  .field select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236e6e73' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;background-position:right 12px center;background-size:16px;
+    padding-right:40px;
+  }
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .toggle-row{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 14px;background:var(--bg-2);
+    border:1px solid var(--line-2);border-radius:12px;
+    min-height:44px;
+  }
+  .toggle-row span{font-size:14px;color:var(--ink-2);flex:1}
+  .toggle{
+    position:relative;width:44px;height:26px;
+    background:var(--line);border-radius:100px;
+    transition:background .2s;flex-shrink:0;cursor:pointer;
+  }
+  .toggle::after{
+    content:"";position:absolute;top:2px;left:2px;
+    width:22px;height:22px;background:#fff;border-radius:50%;
+    box-shadow:0 2px 4px rgba(0,0,0,0.15);
+    transition:transform .2s;
+  }
+  .toggle.on{background:var(--green)}
+  .toggle.on::after{transform:translateX(18px)}
+
+  .form-actions{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+    margin-top:20px;
+  }
+  .form-actions .btn-primary,.form-actions .btn-ghost-light{
+    justify-content:center;width:100%;min-height:48px;font-size:15px;
+  }
+  .btn-ghost-light{
+    padding:14px 20px;background:transparent;color:var(--ink);
+    border:1px solid var(--line);border-radius:100px;
+    font-size:15px;font-weight:500;transition:background .2s;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .btn-ghost-light:hover{background:var(--bg-3)}
+
+  .template-side{
+    background:var(--bg-2);border-radius:var(--radius);
+    padding:24px;border:1px solid var(--line-2);
+    height:fit-content;
+    position:sticky;top:calc(52px + var(--safe-top) + 20px);
+  }
+  .template-side h4{font-size:16px;font-weight:600;margin-bottom:8px;letter-spacing:-0.01em}
+  .template-side p{font-size:14px;color:var(--ink-3);margin-bottom:16px;line-height:1.5}
+  .preview-box{
+    background:#0a0a0a;color:#f5f5f7;
+    border-radius:12px;padding:16px;
+    font-family:'SF Mono',ui-monospace,Menlo,monospace;
+    font-size:11px;line-height:1.6;
+    white-space:pre-wrap;word-break:break-word;
+    max-height:320px;overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  .preview-label{
+    font-size:11px;color:var(--ink-4);
+    text-transform:uppercase;letter-spacing:0.08em;
+    margin-bottom:8px;font-weight:600;
+  }
+  .copied{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:13px;color:var(--green);
+    opacity:0;transition:opacity .3s;margin-top:12px;
+  }
+  .copied.show{opacity:1}
+
+  /* ===== CATEGORIES (04) ===== */
+  .cat-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:12px;
+  }
+  .cat-tile{
+    background:#fff;border:1px solid var(--line-2);
+    border-radius:var(--radius-sm);
+    padding:20px;
+    transition:all .3s cubic-bezier(0.4,0,0.2,1);
+    cursor:default;position:relative;overflow:hidden;
+  }
+  .cat-tile::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(0,113,227,0.04),transparent);
+    opacity:0;transition:opacity .3s;
+  }
+  .cat-tile:hover{
+    transform:translateY(-4px);
+    border-color:var(--blue);
+    box-shadow:0 20px 40px -20px rgba(0,113,227,0.25);
+  }
+  .cat-tile:hover::before{opacity:1}
+  .cat-icon{
+    width:40px;height:40px;border-radius:10px;
+    background:linear-gradient(135deg,var(--bg-3),#fff);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:14px;
+    border:1px solid var(--line-2);
+  }
+  .cat-icon svg{width:20px;height:20px;color:var(--blue)}
+  .cat-num{
+    font-size:11px;color:var(--ink-4);
+    font-weight:600;letter-spacing:0.1em;
+    margin-bottom:6px;
+  }
+  .cat-name{font-size:15px;font-weight:600;letter-spacing:-0.01em;line-height:1.3;margin-bottom:4px}
+  .cat-en{font-size:12px;color:var(--ink-3);line-height:1.4}
+
+  /* ===== TIMELINE (05) ===== */
+  .timeline{
+    position:relative;padding-left:40px;
+  }
+  .timeline::before{
+    content:"";position:absolute;left:15px;top:8px;bottom:8px;
+    width:2px;background:linear-gradient(180deg,var(--blue),var(--green));
+    border-radius:2px;
+  }
+  .tl-step{
+    position:relative;padding:24px 0 24px 32px;
+  }
+  .tl-step:not(:last-child){border-bottom:1px solid var(--line-2)}
+  .tl-dot{
+    position:absolute;left:-32px;top:30px;
+    width:16px;height:16px;border-radius:50%;
+    background:#fff;border:3px solid var(--blue);
+    box-shadow:0 0 0 4px rgba(0,113,227,0.1);
+  }
+  .tl-step:nth-child(2) .tl-dot{border-color:#5e5ce6}
+  .tl-step:nth-child(3) .tl-dot{border-color:#ff9f0a}
+  .tl-step:nth-child(4) .tl-dot{border-color:var(--green)}
+  .tl-head{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    flex-wrap:wrap;gap:12px;margin-bottom:10px;
+  }
+  .tl-phase{font-size:clamp(18px,2.5vw,22px);font-weight:600;letter-spacing:-0.02em}
+  .tl-en{font-size:13px;color:var(--ink-3);margin-top:2px;font-weight:400}
+  .tl-time{
+    padding:6px 14px;background:var(--ink);color:#fff;
+    border-radius:100px;font-size:12px;font-weight:500;
+    letter-spacing:0.02em;white-space:nowrap;
+  }
+  .tl-desc{font-size:15px;color:var(--ink-2);line-height:1.6;max-width:680px}
+
+  /* ===== SCOPE (06) ===== */
+  .scope-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  }
+  .scope-card{
+    border-radius:var(--radius);
+    padding:28px;
+    border:1px solid var(--line-2);
+    background:#fff;
+  }
+  .scope-card.in{
+    background:linear-gradient(135deg,#f0f9f4 0%,#fff 100%);
+    border-color:rgba(48,209,88,0.2);
+  }
+  .scope-card.out{background:var(--bg-2)}
+  .scope-head{
+    display:flex;align-items:center;gap:12px;margin-bottom:20px;
+  }
+  .scope-badge{
+    width:36px;height:36px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .scope-card.in .scope-badge{background:var(--green);color:#fff}
+  .scope-card.out .scope-badge{background:var(--ink-3);color:#fff}
+  .scope-head h3{font-size:17px;font-weight:600;letter-spacing:-0.01em}
+  .scope-list{list-style:none}
+  .scope-list li{
+    padding:12px 0;border-bottom:1px solid var(--line-2);
+    font-size:15px;color:var(--ink-2);
+    display:flex;gap:12px;align-items:flex-start;
+  }
+  .scope-list li:last-child{border-bottom:none}
+  .scope-list li::before{
+    content:"";flex-shrink:0;
+    width:18px;height:18px;border-radius:50%;
+    margin-top:2px;
+    background-repeat:no-repeat;background-position:center;background-size:12px;
+  }
+  .scope-card.in .scope-list li::before{
+    background-color:rgba(48,209,88,0.15);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2330d158' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+  }
+  .scope-card.out .scope-list li::before{
+    background-color:rgba(0,0,0,0.05);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/></svg>");
+  }
+
+  /* ===== SAFE HARBOR (07) ===== */
+  .harbor{
+    background:linear-gradient(135deg,#0a0a0a 0%,#1d1d1f 100%);
+    color:#f5f5f7;
+    border-radius:var(--radius);
+    padding:60px 28px;
+    text-align:center;
+    position:relative;overflow:hidden;
+  }
+  .harbor::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 50% 50% at 50% 0%,rgba(41,151,255,0.2),transparent 70%);
+  }
+  .harbor-inner{position:relative;z-index:2;max-width:720px;margin:0 auto}
+  .harbor-icon{
+    width:64px;height:64px;margin:0 auto 24px;
+    background:linear-gradient(135deg,var(--blue),#5e5ce6);
+    border-radius:18px;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 20px 40px -10px rgba(0,113,227,0.5);
+  }
+  .harbor-icon svg{width:32px;height:32px;color:#fff}
+  .harbor h2{
+    font-size:clamp(26px,5vw,40px);
+    font-weight:700;letter-spacing:-0.02em;
+    line-height:1.15;margin-bottom:18px;
+  }
+  .harbor p{
+    font-size:16px;color:#a1a1a6;line-height:1.6;
+  }
+  .harbor p strong{color:#f5f5f7}
+
+  /* ===== FOOTER ===== */
+  footer{
+    background:#000;color:#86868b;
+    padding:50px 24px calc(30px + var(--safe-bottom));
+    font-size:12px;
+  }
+  .foot-inner{max-width:1200px;margin:0 auto}
+  .foot-top{
+    display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;
+    padding-bottom:32px;border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .foot-brand{color:#f5f5f7;font-size:15px;font-weight:600;margin-bottom:12px}
+  .foot-col h5{color:#f5f5f7;font-size:12px;font-weight:600;margin-bottom:14px;letter-spacing:0.05em;text-transform:uppercase}
+  .foot-col a{display:block;color:#86868b;padding:6px 0;transition:color .2s;font-size:13px}
+  .foot-col a:hover{color:#f5f5f7}
+  .foot-bottom{
+    padding-top:20px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  }
+
+  /* ===== REVEAL ===== */
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(0.4,0,0.2,1),transform .8s cubic-bezier(0.4,0,0.2,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .reveal-delay-1{transition-delay:.1s}
+  .reveal-delay-2{transition-delay:.2s}
+  .reveal-delay-3{transition-delay:.3s}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:960px){
+    .nav-links{display:none}
+    .burger{display:flex}
+    .commit-grid{grid-template-columns:1fr;gap:32px}
+    .channel-card{grid-template-columns:1fr;padding:24px}
+    .template-wrap{grid-template-columns:1fr}
+    .template-side{position:static}
+    .scope-grid{grid-template-columns:1fr}
+    .foot-top{grid-template-columns:1fr 1fr;gap:28px}
+    .hero-meta{grid-template-columns:repeat(2,1fr);gap:16px}
+  }
+  @media(max-width:640px){
+    .section{padding:64px 20px}
+    .section-head{margin-bottom:32px}
+    .hero{padding:calc(60px + var(--safe-top)) 20px calc(40px + var(--safe-bottom))}
+    .hero-pill{font-size:11px;padding:5px 12px;margin-bottom:20px}
+    .hero h1{margin-bottom:16px}
+    .hero-sub{margin-bottom:24px}
+    .hero-actions{flex-direction:column;width:100%;padding:0 8px}
+    .hero-actions .btn-primary,.hero-actions .btn-ghost{width:100%;justify-content:center}
+    .hero-meta{margin-top:36px;gap:12px}
+    .hero-meta > div{padding:12px 8px;background:rgba(255,255,255,0.04);border-radius:12px;border:1px solid rgba(255,255,255,0.06)}
+    .commit-stats{grid-template-columns:1fr;gap:10px}
+    .stat{display:flex;justify-content:space-between;align-items:center;padding:16px 18px}
+    .stat-num{font-size:28px}
+    .stat-label{margin-top:0;text-align:right}
+    .channel-card{padding:20px}
+    .channel-email{font-size:20px}
+    .form-card{padding:20px}
+    .field-row{grid-template-columns:1fr}
+    .form-actions{grid-template-columns:1fr}
+    .cat-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+    .cat-tile{padding:16px}
+    .cat-icon{width:34px;height:34px;margin-bottom:10px}
+    .cat-icon svg{width:17px;height:17px}
+    .cat-name{font-size:13px}
+    .cat-en{font-size:11px}
+    .timeline{padding-left:32px}
+    .tl-step{padding:20px 0 20px 24px}
+    .tl-dot{left:-24px;top:26px;width:14px;height:14px}
+    .tl-head{flex-direction:column;gap:8px}
+    .tl-time{align-self:flex-start}
+    .scope-card{padding:22px}
+    .harbor{padding:48px 22px;border-radius:18px}
+    .foot-top{grid-template-columns:1fr;gap:24px}
+    .foot-bottom{flex-direction:column;text-align:center}
+    .nav-inner{padding:0 16px}
+  }
+  @media(max-width:380px){
+    .cat-grid{grid-template-columns:1fr}
+    .hero-meta{grid-template-columns:1fr}
+  }
+
+  /* Reduce motion */
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+    .reveal{opacity:1;transform:none}
+  }
+
+  /* ===== BILINGUAL (zh/en) ===== */
+  .title-en{font-size:15px;font-weight:500;color:var(--ink-3);letter-spacing:0;margin-top:-8px;margin-bottom:16px}
+  .section.dark .title-en{color:#a1a1a6}
+  .lead-en{font-size:14px;color:var(--ink-4);font-weight:400;line-height:1.5;margin-top:8px}
+  .p-en{font-size:13px;color:var(--ink-4);font-weight:400;line-height:1.5;margin-top:-10px;margin-bottom:16px}
+  .stat-label-en{font-size:11px;color:var(--ink-4);margin-top:2px}
+  .nav-link .en,.m-en{display:block;font-size:10px;color:var(--ink-4);letter-spacing:0.03em;line-height:1.2;margin-top:1px}
+  .nav.dark .nav-link .en{color:#8e8e93}
+  .mobile-menu a{line-height:1.3}
+  .li-en{display:block;font-size:12px;color:var(--ink-4);margin-top:2px}
+  .harbor .p-en-dark{font-size:14px;color:#6e6e73;margin-top:10px}
+  .foot-col a .en,.foot-brand-en{display:block;font-size:11px;color:#5a5a5e;margin-top:1px}
+  .foot-desc-en{font-size:12px;color:#5a5a5e;margin-top:8px;line-height:1.6;max-width:320px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      GIGA-TMS Security
+    </a>
+    <div class="nav-links">
+      <a href="#commitment" class="nav-link">政策<span class="en">Policy</span></a>
+      <a href="#channel" class="nav-link">通報<span class="en">Report</span></a>
+      <a href="#categories" class="nav-link">分類<span class="en">Categories</span></a>
+      <a href="#timeline" class="nav-link">時程<span class="en">Timeline</span></a>
+      <a href="#scope" class="nav-link">範圍<span class="en">Scope</span></a>
+      <a href="#channel" class="nav-cta">通報漏洞 · Report</a>
+    </div>
+    <button class="burger" id="burger" aria-label="選單" aria-expanded="false">
+      <span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <a href="#commitment">政策聲明<span class="m-en">Policy Statement</span></a>
+  <a href="#channel">通報管道<span class="m-en">How to Report</span></a>
+  <a href="#template">通報範本<span class="m-en">Report Template</span></a>
+  <a href="#categories">分類參考<span class="m-en">Category Reference</span></a>
+  <a href="#timeline">處理時程<span class="m-en">Handling Timeline</span></a>
+  <a href="#scope">適用範圍<span class="m-en">Scope</span></a>
+  <a href="#safeharbor">安全港<span class="m-en">Safe Harbor</span></a>
+  <a href="#channel" class="m-cta">通報漏洞 · Report a Vulnerability</a>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-pill">
+      <span class="dot"></span>
+      <span>Coordinated Vulnerability Disclosure · v2.2</span>
+    </div>
+    <h1>Product Security.<br/>Built on trust.</h1>
+    <p class="hero-sub">我們以 ISO 29147、ISO 30111 與 EU Cyber Resilience Act 為基準，建立透明、可預測的漏洞協調揭露流程。每一份善意通報，都是讓產品更安全的力量。</p>
+    <p class="hero-sub" style="font-size:clamp(14px,1.8vw,17px);color:#86868b;margin-top:-20px">Built on ISO 29147, ISO 30111 and the EU Cyber Resilience Act, our coordinated vulnerability disclosure process is transparent and predictable — every good-faith report helps make our products safer.</p>
+    <div class="hero-actions">
+      <a href="#template" class="btn-primary">
+        通報漏洞 · Report
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#commitment" class="btn-ghost">閱讀政策 · Read Policy</a>
+    </div>
+    <div class="hero-meta">
+      <div><strong>Version 2.2</strong>Policy</div>
+      <div><strong>ISO 29147 · 30111</strong>Standards</div>
+      <div><strong>EU CRA</strong>Compliance</div>
+      <div><strong>48 hrs</strong>Response SLA</div>
+    </div>
+  </div>
+</header>
+
+<!-- 01 COMMITMENT -->
+<section class="section" id="commitment">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">01 · Our Commitment</div>
+      <h2 class="section-title">政策聲明</h2>
+      <div class="title-en">Policy Statement</div>
+      <p class="section-lead">集佳科技重視產品安全。我們歡迎安全研究人員、客戶與合作夥伴，以善意通報產品中發現的潛在漏洞。</p>
+      <p class="lead-en">GIGA-TMS takes product security seriously. We welcome good-faith reports of potential vulnerabilities from security researchers, customers, and partners.</p>
+    </div>
+    <div class="commit-grid">
+      <div class="commit-text reveal">
+        <p>對於每一件通報，我們承諾於 <strong>48 小時內</strong>提供初步回覆與案件編號（CVD-YYYY-NNN），並依本政策所述時程進行驗證、修補與協調揭露。</p>
+        <p class="p-en">For every report, we commit to an <strong>initial reply within 48 hours</strong> together with a case number (CVD-YYYY-NNN), followed by verification, remediation and coordinated disclosure per the timeline in this policy.</p>
+        <p>本政策遵循 <strong>ISO/IEC 29147</strong>（漏洞揭露）、<strong>ISO/IEC 30111</strong>（漏洞處理）與 <strong>EU Cyber Resilience Act</strong> 之要求，確保流程透明、可預測、對善意研究者友善。</p>
+        <p class="p-en">This policy follows <strong>ISO/IEC 29147</strong> (vulnerability disclosure), <strong>ISO/IEC 30111</strong> (vulnerability handling) and the <strong>EU Cyber Resilience Act</strong>, keeping the process transparent, predictable and researcher-friendly.</p>
+        <p>我們視安全研究社群為提升產品安全的重要夥伴，並對遵循本政策之通報者提供安全港承諾。</p>
+        <p class="p-en">We consider the security research community a key partner in improving product security, and offer a safe-harbor commitment to reporters who follow this policy.</p>
+      </div>
+      <div class="commit-visual reveal reveal-delay-1">
+        <div class="shield">
+          <svg viewBox="0 0 200 220" fill="none">
+            <defs>
+              <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0071e3"/>
+                <stop offset="100%" stop-color="#5e5ce6"/>
+              </linearGradient>
+            </defs>
+            <path d="M100 10 L185 45 V110 C185 160 145 195 100 210 C55 195 15 160 15 110 V45 Z" fill="url(#sg)" opacity="0.95"/>
+            <path d="M100 10 L185 45 V110 C185 160 145 195 100 210 C55 195 15 160 15 110 V45 Z" fill="none" stroke="#fff" stroke-width="1" opacity="0.3"/>
+            <path d="M70 110 L92 132 L135 88" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="commit-stats reveal">
+      <div class="stat"><div class="stat-num">48h</div><div class="stat-label">初步回覆 SLA<span class="stat-label-en">Acknowledgement SLA</span></div></div>
+      <div class="stat"><div class="stat-num">90d</div><div class="stat-label">重大漏洞修補目標<span class="stat-label-en">Critical Fix Target</span></div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">善意通報安全港<span class="stat-label-en">Good-Faith Safe Harbor</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 CHANNEL -->
+<section class="section alt" id="channel">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">02 · How to Report</div>
+      <h2 class="section-title">通報管道</h2>
+      <div class="title-en">How to Report</div>
+      <p class="section-lead">含技術細節之通報，建議使用 PGP 公鑰加密；一般性回報可直接寄送。</p>
+      <p class="lead-en">For reports containing technical detail, please encrypt with our PGP key; general inquiries can be sent directly.</p>
+    </div>
+    <div class="channel-card reveal">
+      <div class="channel-main">
+        <div class="label">Report Email</div>
+        <a class="channel-email" href="mailto:security@gigatms.com.tw?subject=%5BVulnerability%20Report%5D">security@gigatms.com.tw</a>
+        <div class="channel-hint">主旨請標註 <code>[Vulnerability Report]</code>，並儘可能使用第 03 節之範本。</div>
+        <div class="channel-hint" style="margin-top:4px;color:var(--ink-4);font-size:13px">Please use the subject <code>[Vulnerability Report]</code> and, where possible, the template in Section 03.</div>
+      </div>
+      <div class="channel-side">
+        <h4>PGP Public Key</h4>
+        <div style="font-size:13px;color:var(--ink-3)">強烈建議以 PGP 加密技術細節與 PoC。</div>
+        <div style="font-size:12px;color:var(--ink-4);margin-top:2px">We strongly recommend encrypting technical details and PoC with PGP.</div>
+        <div class="pgp-fp">Fingerprint: XXXX XXXX XXXX XXXX XXXX  XXXX XXXX XXXX XXXX XXXX</div>
+        <div class="channel-actions">
+          <a class="btn-sm primary" href="/pgp-key.txt" download>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下載公鑰 · Download Key
+          </a>
+          <a class="btn-sm ghost" href="https://www.gigatms.com.tw/.well-known/security.txt">security.txt</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 TEMPLATE / FORM -->
+<section class="section" id="template">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">03 · Report Template</div>
+      <h2 class="section-title">通報範本</h2>
+      <div class="title-en">Report Template</div>
+      <p class="section-lead">本頁面為純靜態頁面，不蒐集、不傳送任何資料。填寫後可一鍵複製或開啟郵件應用程式。</p>
+      <p class="lead-en">This is a purely static page — nothing is collected or transmitted. Once filled in, copy the report with one click or open it directly in your mail app.</p>
+    </div>
+    <div class="template-wrap">
+      <div class="form-card reveal">
+        <h3>填寫通報資料 <span style="font-weight:400;color:var(--ink-4);font-size:14px">Fill in Report</span></h3>
+        <div class="form-sub">所有欄位皆存在於您的裝置上，送出前不會離開瀏覽器。<br><span style="color:var(--ink-4);font-size:13px">All fields stay on your device — nothing leaves your browser until you send it.</span></div>
+
+        <div class="field">
+          <label>1. 產品型號 <span class="field-en">Product Model</span></label>
+          <input type="text" id="f_model" placeholder="例：ER750" autocomplete="off" inputmode="text" />
+        </div>
+
+        <div class="field">
+          <label>2. 韌體版本 <span class="field-en">Firmware Version</span></label>
+          <input type="text" id="f_fw" placeholder="例：v1.2.3" autocomplete="off" inputmode="text" />
+        </div>
+
+        <div class="field">
+          <label>3. 漏洞分類 <span class="field-en">Category (1-12)</span></label>
+          <select id="f_cat">
+            <option value="">— 請選擇 Select —</option>
+            <option value="01">01 身分驗證繞過／弱密碼 · Authentication Bypass / Weak Credentials</option>
+            <option value="02">02 授權不當／權限提升 · Improper Authorization / Privilege Escalation</option>
+            <option value="03">03 未受保護之管理介面 · Exposed Management Interface</option>
+            <option value="04">04 敏感資料未加密傳輸 · Cleartext Transmission</option>
+            <option value="05">05 敏感資料儲存不當 · Insecure Storage</option>
+            <option value="06">06 韌體更新機制缺陷 · Insecure Firmware Update</option>
+            <option value="07">07 韌體保護不足 · Insufficient Firmware Protection</option>
+            <option value="08">08 記憶體損壞 · Memory Corruption</option>
+            <option value="09">09 注入類攻擊 · Injection (CMD / SQL / XSS)</option>
+            <option value="10">10 RFID／無線協定弱點 · RF Protocol Weakness</option>
+            <option value="11">11 第三方元件已知漏洞 · Vulnerable Third-Party Component</option>
+            <option value="12">12 其他 · Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>4. 漏洞描述與重現步驟 <span class="field-en">Description & Steps</span></label>
+          <textarea id="f_desc" placeholder="請描述漏洞現象與重現步驟…" inputmode="text"></textarea>
+        </div>
+
+        <div class="field">
+          <label>5. 影響評估 <span class="field-en">Impact Assessment</span></label>
+          <textarea id="f_impact" placeholder="可能造成的影響…" rows="3" inputmode="text"></textarea>
+        </div>
+
+        <div class="field">
+          <label>6. PoC 或附件說明 <span class="field-en">PoC / Attachments</span></label>
+          <textarea id="f_poc" placeholder="附件檔名、連結或說明…" rows="2" inputmode="text"></textarea>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>7a. 姓名或代號 <span class="field-en">Name</span></label>
+            <input type="text" id="f_name" placeholder="您的姓名或代號" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label>7b. Email</label>
+            <input type="email" id="f_email" placeholder="you@example.com" autocomplete="email" inputmode="email" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>7c. 同意公開致謝？<span class="field-en">Public acknowledgement</span></label>
+          <div class="toggle-row">
+            <span>於安全公告中公開致謝 <span style="color:var(--ink-4);font-size:12px">/ Credit me in the advisory</span></span>
+            <div class="toggle" id="f_ack" role="switch" aria-checked="false" tabindex="0"></div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" id="btnCopy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            複製通報內容 · Copy Report
+          </button>
+          <button class="btn-ghost-light" id="btnMail">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            開啟郵件 · Open Mail
+          </button>
+        </div>
+        <div class="copied" id="copiedMsg">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          已複製至剪貼簿 · Copied to clipboard
+        </div>
+      </div>
+
+      <div class="template-side reveal reveal-delay-1">
+        <h4>即時預覽 <span style="font-weight:400;color:var(--ink-4);font-size:13px">Live Preview</span></h4>
+        <p>您所填寫的內容將即時組合成下列通報信件格式。<br><span style="color:var(--ink-4);font-size:13px">What you enter is assembled live into the report format below.</span></p>
+        <div class="preview-label">Preview</div>
+        <div class="preview-box" id="preview"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 CATEGORIES -->
+<section class="section alt" id="categories">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">04 · Category Reference</div>
+      <h2 class="section-title">分類參考</h2>
+      <div class="title-en">Category Reference</div>
+      <p class="section-lead">僅供通報時參考選填。選擇「其他」或留空亦可，我們將於收件時協助歸類。</p>
+      <p class="lead-en">For reference only when reporting. Choose "Other" or leave it blank — we will help classify it on receipt.</p>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+  </div>
+</section>
+
+<!-- 05 TIMELINE -->
+<section class="section" id="timeline">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">05 · Handling Timeline</div>
+      <h2 class="section-title">處理時程</h2>
+      <div class="title-en">Handling Timeline</div>
+      <p class="section-lead">從收件到揭露，每一步都有明確時程承諾。</p>
+      <p class="lead-en">From intake to disclosure, every step carries a clear time commitment.</p>
+    </div>
+    <div class="timeline reveal">
+      <div class="tl-step">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <div>
+            <div class="tl-phase">初步回覆</div>
+            <div class="tl-en">Acknowledgement</div>
+          </div>
+          <div class="tl-time">≤ 48 小時</div>
+        </div>
+        <div class="tl-desc">回覆案件編號（CVD-YYYY-NNN），確認已受理並指派窗口。<br><span style="color:var(--ink-4);font-size:13px">We reply with a case number (CVD-YYYY-NNN), confirming intake and an assigned contact.</span></div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <div>
+            <div class="tl-phase">驗證與定級</div>
+            <div class="tl-en">Triage</div>
+          </div>
+          <div class="tl-time">數個工作天</div>
+        </div>
+        <div class="tl-desc">重現漏洞、CVSS 評估、影響範圍比對，並與通報者保持溝通。<br><span style="color:var(--ink-4);font-size:13px">We reproduce the issue, score it with CVSS, check its impact, and stay in touch with the reporter.</span></div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <div>
+            <div class="tl-phase">修補</div>
+            <div class="tl-en">Remediation</div>
+          </div>
+          <div class="tl-time">45 / 90 天</div>
+        </div>
+        <div class="tl-desc">依嚴重度目標時程開發並發布修補，重大漏洞以 45 天為目標。<br><span style="color:var(--ink-4);font-size:13px">Fixes are developed and released against severity-based targets, aiming for 45 days on critical issues.</span></div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot"></div>
+        <div class="tl-head">
+          <div>
+            <div class="tl-phase">協調揭露</div>
+            <div class="tl-en">Disclosure</div>
+          </div>
+          <div class="tl-time">修補後</div>
+        </div>
+        <div class="tl-desc">發布安全公告；如通報者需要，協助申請 CVE ID，並公開致謝。<br><span style="color:var(--ink-4);font-size:13px">We publish a security advisory, help with a CVE ID if requested, and credit the reporter publicly.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 SCOPE -->
+<section class="section alt" id="scope">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">06 · Scope</div>
+      <h2 class="section-title">適用範圍</h2>
+      <div class="title-en">Scope</div>
+      <p class="section-lead">明確界定受理與非屬本政策範圍之標的，避免混淆。</p>
+      <p class="lead-en">To avoid confusion, this section clearly defines what is and isn't covered by this policy.</p>
+    </div>
+    <div class="scope-grid">
+      <div class="scope-card in reveal">
+        <div class="scope-head">
+          <div class="scope-badge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3>受理範圍 In Scope</h3>
+        </div>
+        <ul class="scope-list">
+          <li>Promag 品牌硬體產品及其韌體<span class="li-en">Promag-branded hardware products and their firmware</span></li>
+          <li>產品隨附之設定工具與 SDK<span class="li-en">Companion configuration tools and SDKs</span></li>
+          <li>產品之網路服務與管理介面<span class="li-en">Product network services and management interfaces</span></li>
+        </ul>
+      </div>
+      <div class="scope-card out reveal reveal-delay-1">
+        <div class="scope-head">
+          <div class="scope-badge">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <h3>非本政策範圍 Out of Scope</h3>
+        </div>
+        <ul class="scope-list">
+          <li>公司網站與行銷基礎設施（仍受理，轉交 IT）<span class="li-en">Corporate website / marketing infrastructure (still accepted, routed to IT)</span></li>
+          <li>對產品或服務之阻斷式測試（DoS）<span class="li-en">Denial-of-service testing against products or services</span></li>
+          <li>社交工程、實體入侵測試<span class="li-en">Social engineering or physical intrusion testing</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 SAFE HARBOR -->
+<section class="section" id="safeharbor">
+  <div class="wrap">
+    <div class="harbor reveal">
+      <div class="harbor-inner">
+        <div class="harbor-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="section-eyebrow" style="justify-content:center;color:var(--blue-2)">07 · Safe Harbor</div>
+        <h2>安全港聲明</h2>
+        <div class="title-en" style="color:#a1a1a6">Safe Harbor Statement</div>
+        <p>對於遵循本政策、以善意進行研究與通報之人員，本公司承諾<strong>不採取法律行動</strong>。我們視安全研究社群為提升產品安全的重要夥伴。經通報者同意，我們將於安全公告中公開致謝。</p>
+        <p class="p-en-dark">For anyone researching and reporting in good faith under this policy, we commit to <strong>taking no legal action</strong>. We view the security research community as a key partner in improving product security, and, with the reporter's consent, will credit them publicly in the advisory.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">GIGA-TMS · Product Security</div>
+        <p style="max-width:320px;line-height:1.6">集佳科技致力於打造安全、可信賴的產品。我們與全球安全研究社群合作，持續提升產品韌性。</p>
+        <p class="foot-desc-en">GIGA-TMS is committed to building secure, trustworthy products. We work with the global security research community to continuously strengthen product resilience.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Policy</h5>
+        <a href="#commitment">政策聲明<span class="en">Policy Statement</span></a>
+        <a href="#timeline">處理時程<span class="en">Handling Timeline</span></a>
+        <a href="#scope">適用範圍<span class="en">Scope</span></a>
+        <a href="#safeharbor">安全港<span class="en">Safe Harbor</span></a>
+      </div>
+      <div class="foot-col">
+        <h5>Report</h5>
+        <a href="#channel">通報漏洞<span class="en">Report a Vulnerability</span></a>
+        <a href="#template">通報範本<span class="en">Report Template</span></a>
+        <a href="#categories">分類參考<span class="en">Category Reference</span></a>
+        <a href="/pgp-key.txt">PGP 公鑰<span class="en">PGP Key</span></a>
+      </div>
+      <div class="foot-col">
+        <h5>Resources</h5>
+        <a href="https://www.gigatms.com.tw/.well-known/security.txt">security.txt</a>
+        <a href="https://www.gigatms.com.tw/RWD/privacy.asp">隱私政策<span class="en">Privacy Policy</span></a>
+        <a href="https://www.gigatms.com.tw">官方網站<span class="en">Official Website</span></a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© GIGA-TMS INC. · Promag® is a registered trademark of GIGA-TMS Inc.</div>
+      <div>ISO 29147 · ISO 30111 · EU CRA</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ===== Category tiles =====
+  const categories = [
+    {n:'01',zh:'身分驗證繞過／弱密碼',en:'Authentication Bypass / Weak Credentials',icon:'<path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/><circle cx="12" cy="11" r="2"/>'},
+    {n:'02',zh:'授權不當／權限提升',en:'Improper Authorization / Privilege Escalation',icon:'<rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="3"/><path d="M12 14v3"/>'},
+    {n:'03',zh:'未受保護之管理介面',en:'Exposed Management Interface',icon:'<rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><circle cx="6" cy="7" r="1" fill="currentColor"/>'},
+    {n:'04',zh:'敏感資料未加密傳輸',en:'Cleartext Transmission',icon:'<path d="M4 4h16v12H4z"/><path d="M4 8h16"/><path d="M8 16l4 4 4-4"/>'},
+    {n:'05',zh:'敏感資料儲存不當',en:'Insecure Storage',icon:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>'},
+    {n:'06',zh:'韌體更新機制缺陷',en:'Insecure Firmware Update',icon:'<path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/>'},
+    {n:'07',zh:'韌體保護不足',en:'Insufficient Firmware Protection',icon:'<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01" stroke-width="3"/>'},
+    {n:'08',zh:'記憶體損壞',en:'Memory Corruption',icon:'<rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>'},
+    {n:'09',zh:'注入類攻擊',en:'Injection (CMD / SQL / XSS)',icon:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>'},
+    {n:'10',zh:'RFID／無線協定弱點',en:'RF Protocol Weakness',icon:'<path d="M5 12a7 7 0 0 1 14 0"/><path d="M8.5 12a3.5 3.5 0 0 1 7 0"/><circle cx="12" cy="12" r="1" fill="currentColor"/><path d="M12 13v8"/>'},
+    {n:'11',zh:'第三方元件已知漏洞',en:'Vulnerable Third-Party Component',icon:'<path d="M20 7L12 3 4 7v10l8 4 8-4V7z"/><line x1="12" y1="3" x2="12" y2="21"/><path d="M4 7l8 4 8-4"/>'},
+    {n:'12',zh:'其他',en:'Other',icon:'<circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="3"/>'}
+  ];
+  const grid = document.getElementById('catGrid');
+  categories.forEach((c,i) => {
+    const el = document.createElement('div');
+    el.className = 'cat-tile reveal';
+    el.style.transitionDelay = (i*30)+'ms';
+    el.innerHTML = `
+      <div class="cat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg>
+      </div>
+      <div class="cat-num">${c.n}</div>
+      <div class="cat-name">${c.zh}</div>
+      <div class="cat-en">${c.en}</div>
+    `;
+    grid.appendChild(el);
+  });
+
+  // ===== Nav scroll =====
+  const nav = document.getElementById('nav');
+  const hero = document.querySelector('.hero');
+  function updateNav(){
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    if(heroBottom < 60) nav.classList.remove('dark');
+    else nav.classList.add('dark');
+  }
+  nav.classList.add('dark');
+  window.addEventListener('scroll',updateNav,{passive:true});
+
+  // ===== Mobile menu =====
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burger.addEventListener('click', () => {
+    const open = burger.classList.toggle('open');
+    mobileMenu.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open);
+    mobileMenu.setAttribute('aria-hidden', !open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      burger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      burger.setAttribute('aria-expanded', false);
+      mobileMenu.setAttribute('aria-hidden', true);
+      document.body.style.overflow = '';
+    });
+  });
+
+  // ===== Reveal on scroll =====
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:0.1,rootMargin:'0px 0px -60px 0px'});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ===== Toggle =====
+  const toggle = document.getElementById('f_ack');
+  toggle.addEventListener('click', () => {
+    const on = toggle.classList.toggle('on');
+    toggle.setAttribute('aria-checked', on);
+    updatePreview();
+  });
+  toggle.addEventListener('keydown', e => {
+    if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggle.click(); }
+  });
+
+  // ===== Form → preview =====
+  const fields = ['f_model','f_fw','f_cat','f_desc','f_impact','f_poc','f_name','f_email'];
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', updatePreview);
+    el.addEventListener('change', updatePreview);
+  });
+
+  function buildText(){
+    const v = id => document.getElementById(id).value.trim();
+    const catSel = document.getElementById('f_cat');
+    const catText = catSel.options[catSel.selectedIndex].text;
+    const ack = toggle.classList.contains('on') ? 'Y' : 'N';
+    return `═══ GIGA-TMS 漏洞通報範本 / Vulnerability Report Template ═══
+
+1. 產品型號 / Product Model:
+   ${v('f_model') || '(未填寫)'}
+2. 韌體版本 / Firmware Version:
+   ${v('f_fw') || '(未填寫)'}
+3. 漏洞分類 / Category:
+   ${catSel.value ? catText : '(未選擇)'}
+4. 漏洞描述與重現步驟 / Description & Steps to Reproduce:
+   ${v('f_desc') || '(未填寫)'}
+5. 影響評估 / Impact Assessment:
+   ${v('f_impact') || '(未填寫)'}
+6. PoC 或附件說明 / PoC or Attachment Notes:
+   ${v('f_poc') || '(未填寫)'}
+7. 通報者資訊 / Reporter:
+   姓名或代號 Name or handle: ${v('f_name') || '(未填寫)'}
+   Email: ${v('f_email') || '(未填寫)'}
+   同意公開致謝? Public acknowledgement? ${ack}
+═══════════════════════════════════════════════════════════`;
+  }
+
+  function updatePreview(){
+    document.getElementById('preview').textContent = buildText();
+  }
+  updatePreview();
+
+  // ===== Copy =====
+  document.getElementById('btnCopy').addEventListener('click', async () => {
+    const text = buildText();
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(e){}
+      document.body.removeChild(ta);
+    }
+    const msg = document.getElementById('copiedMsg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2200);
+  });
+
+  // ===== Mail =====
+  document.getElementById('btnMail').addEventListener('click', () => {
+    const text = buildText();
+    const subject = encodeURIComponent('[Vulnerability Report]');
+    const body = encodeURIComponent(text);
+    window.location.href = `mailto:security@gigatms.com.tw?subject=${subject}&body=${body}`;
+  });
+</script>
+
+</body>
+</html>
