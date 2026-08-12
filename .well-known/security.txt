@@ -1,0 +1,16 @@
+# security.txt for GIGA-TMS INC.
+
+# This file follows RFC 9116: https://www.rfc-editor.org/rfc/rfc9116
+
+
+
+Contact: mailto:security@gigatms.com.tw
+
+Expires: 2027-08-12T00:00:00.000Z
+
+Preferred-Languages: en, zh-Hant
+
+Canonical: https://security.gigatms.com.tw/.well-known/security.txt
+
+Policy: https://security.gigatms.com.tw/
+
