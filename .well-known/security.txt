@@ -13,4 +13,5 @@ Preferred-Languages: en, zh-Hant
 Canonical: https://security.gigatms.com.tw/.well-known/security.txt
 
 Policy: https://security.gigatms.com.tw/
+Encryption: https://security.gigatms.com.tw/pgp-key.txt
 
