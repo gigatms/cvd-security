@@ -47,32 +47,31 @@
   /* ===== NAV ===== */
   .nav{
     position:fixed;top:0;left:0;right:0;z-index:100;
-    background:rgba(255,255,255,0.72);
+    background:rgba(255,255,255,0.96);
     backdrop-filter:saturate(180%) blur(20px);
     -webkit-backdrop-filter:saturate(180%) blur(20px);
-    border-bottom:1px solid rgba(0,0,0,0.06);
+    border-bottom:1px solid rgba(0,80,180,0.14);
     transition:background .3s,border-color .3s;
     padding-top:var(--safe-top);
   }
-  .nav.dark{background:rgba(0,0,0,0.72);border-bottom-color:rgba(255,255,255,0.08)}
-  .nav.dark .nav-brand,.nav.dark .nav-link{color:#f5f5f7}
+  .nav.dark{background:rgba(255,255,255,0.96);border-bottom-color:rgba(0,80,180,0.14)}
   .nav-inner{
     max-width:1200px;margin:0 auto;
     display:flex;align-items:center;justify-content:space-between;
-    padding:0 28px;height:52px;
+    padding:0 28px;height:60px;
   }
-  .nav-brand{font-weight:600;font-size:15px;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
-  .nav-brand svg{width:18px;height:18px}
+  .nav-brand{display:flex;align-items:center;line-height:0}
+  .nav-brand img{display:block;width:auto;height:38px;max-width:210px;object-fit:contain}
   .nav-links{display:flex;gap:28px;align-items:center}
   .nav-link{font-size:13px;color:var(--ink-2);transition:color .2s}
   .nav-link:hover{color:var(--blue)}
   .nav-cta{
     font-size:13px;padding:7px 16px;
-    background:var(--ink);color:#fff;border-radius:100px;
+    background:var(--blue);color:#fff;border-radius:100px;
     transition:background .2s;
   }
-  .nav-cta:hover{background:#000}
-  .nav.dark .nav-cta{background:#f5f5f7;color:#1d1d1f}
+  .nav-cta:hover{background:#0077ed}
+  .nav.dark .nav-cta{background:var(--blue);color:#fff}
 
   /* Hamburger */
   .burger{
@@ -579,7 +578,8 @@
     .harbor{padding:48px 22px;border-radius:18px}
     .foot-top{grid-template-columns:1fr;gap:24px}
     .foot-bottom{flex-direction:column;text-align:center}
-    .nav-inner{padding:0 16px}
+    .nav-inner{height:56px;padding:0 16px}
+    .nav-brand img{height:34px;max-width:185px}
   }
   @media(max-width:380px){
     .cat-grid{grid-template-columns:1fr}
@@ -612,9 +612,8 @@
 <!-- NAV -->
 <nav class="nav" id="nav">
   <div class="nav-inner">
-    <a href="#" class="nav-brand">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      GIGA-TMS INC. Security
+    <a href="#" class="nav-brand" aria-label="GIGA-TMS INC. 首頁">
+      <img src="assets/giga-tms-company-logo.png" alt="GIGA-TMS INC. Quality, Delivery &amp; Service" width="800" height="175" fetchpriority="high">
     </a>
     <div class="nav-links">
       <a href="#commitment" class="nav-link">政策<span class="en">Policy</span></a>
@@ -1006,17 +1005,10 @@ Public acknowledgement preference (optional):</div>
     grid.appendChild(el);
   });
 
-  // ===== Nav scroll =====
+  // ===== Nav colour =====
+  // Keep the company identity on a consistently light background for reliable logo contrast.
   const nav = document.getElementById('nav');
-  const hero = document.querySelector('.hero');
-  function updateNav(){
-    const heroBottom = hero.getBoundingClientRect().bottom;
-    if(heroBottom < 60) nav.classList.remove('dark');
-    else nav.classList.add('dark');
-  }
-  nav.classList.add('dark');
-  window.addEventListener('scroll',updateNav,{passive:true});
-
+  nav.classList.remove('dark');
   // ===== Mobile menu =====
   const burger = document.getElementById('burger');
   const mobileMenu = document.getElementById('mobileMenu');
